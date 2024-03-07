@@ -6,9 +6,6 @@ public class TaskManager {
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private int id = 1;
-    public static void main(String[] args) {
-
-    }
 
     public ArrayList<Task> getTasks() {
         ArrayList<Task> allTasks = new ArrayList<>();
@@ -17,6 +14,7 @@ public class TaskManager {
         }
         return allTasks;
     }
+
     public ArrayList<Epic> getEpics() {
         ArrayList<Epic> allEpics = new ArrayList<>();
         for (Epic value : epics.values()) {
@@ -24,6 +22,7 @@ public class TaskManager {
         }
         return allEpics;
     }
+
     public ArrayList<Subtask> getSubtascs() {
         ArrayList<Subtask> allSubtasks = new ArrayList<>();
         for (Subtask value : subtasks.values()) {
@@ -35,9 +34,11 @@ public class TaskManager {
     public void deleteTasks() {
         tasks.clear();
     }
+
     public void deleteEpics() {
         epics.clear();
     }
+
     public void deleteSubtasks() {
         subtasks.clear();
     }
@@ -45,48 +46,67 @@ public class TaskManager {
     public Task getTaskById(int taskId) {
         return tasks.get(taskId);
     }
+
     public Task getEpicById(int epicId) {
         return epics.get(epicId);
     }
+
     public Task getSubtaskById(int subtaskId) {
         return subtasks.get(subtaskId);
     }
 
     public void createTask(Task task) {
+        task.id = id;
         tasks.put(id, task);
         id++;
     }
-    public void createEpic(Epic epic){
+
+    public void createEpic(Epic epic) {
+        epic.id = id;
         epics.put(id, epic);
         id++;
     }
-    public void createSubtask(Subtask subtask){
+
+    public void createSubtask(Subtask subtask) {
+        subtask.id = id;
         subtasks.put(id, subtask);
+        Epic thisEpic = epics.get(subtask.getEpicId());
+        thisEpic.getSubtasksIdInEpic().add(id);
         id++;
     }
-    public void updateTask(int taskId, Task updateTask){
+
+    public void updateTask(int taskId, Task updateTask) {
         tasks.put(taskId, updateTask);
     }
-    public void updateEpic(int epicId, Epic updateEpic){
+
+    public void updateEpic(int epicId, Epic updateEpic) {
         epics.put(epicId, updateEpic);
     }
-    public void updateSubtask(int subtaskId, Subtask updateSubtask){
-        subtasks.put(subtaskId, updateSubtask);
+
+    public void updateSubtask(int subtaskId, Subtask updateSubtask) {
         int epicId = updateSubtask.getEpicId();
+        subtasks.put(subtaskId, updateSubtask);
         checkEpic(epicId);
     }
+
     public void deleteByIdTask(int taskId) {
         tasks.remove(taskId);
     }
+
     public void deleteByIdEpic(int epicId) {
+        Epic thisEpic = epics.get(epicId);
+        ArrayList<Integer> subtusksId = thisEpic.getSubtasksIdInEpic();
+        for (int id : subtusksId) {
+            deleteByIdSubtask(id);
+        }
         // удалить все подзадачи эпика
         epics.remove(epicId);
     }
+
     public void deleteByIdSubtask(int subtaskId) {
         //проверить статус других задач эпика + наличие других эпиков
         int epicId = subtasks.get(subtaskId).getEpicId();
         subtasks.remove(subtaskId);
-        checkEpic(epicId);
     }
 
     public ArrayList<Subtask> subtasksInEpic(int epicId) {
@@ -110,15 +130,21 @@ public class TaskManager {
         for (Subtask thisSubtask : subtasksInThisEpic) {
             if (thisSubtask.status.equals(Status.IN_PROGRESS)) {
                 thisEpic.status = Status.IN_PROGRESS;
-            } else if (thisEpic.status.equals(Status.DONE)) {
+            } else if (thisSubtask.status.equals(Status.DONE)) {
                 checkDone++;
             }
         }
         if (subtasksIdInThisEpic.size() == checkDone) {
             thisEpic.status = Status.DONE;
         }
-
     }
 
-
+    @Override
+    public String toString() {
+        return "TaskManager{" +
+                "tasks=" + tasks +
+                ", epics=" + epics +
+                ", subtasks=" + subtasks +
+                '}';
+    }
 }
