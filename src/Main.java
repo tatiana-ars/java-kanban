@@ -32,9 +32,9 @@ public class Main {
 
 
         Subtask updatedSubtask = new Subtask("Сдать финальное задание", "надо!", 3, 5,Status.DONE);
-        taskManager.updateSubtask(updatedSubtask.id, updatedSubtask);
+        taskManager.updateSubtask(updatedSubtask);
         taskManager.deleteTasks();
-        taskManager.deleteByIdEpic(4);
+        taskManager.deleteByEpicId(4);
 
         System.out.println("_____________________________________________");
 
