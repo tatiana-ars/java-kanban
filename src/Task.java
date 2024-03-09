@@ -15,7 +15,7 @@ public class Task {
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
-        status = status;
+        this.status = status;
     }
 
     public int getId() {

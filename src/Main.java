@@ -7,7 +7,7 @@ public class Main {
         Epic epic1 = new Epic("Закончить спринт", "пора");
         Epic epic2 = new Epic("Схлдить в магазин","Можно завтра");
         Subtask subtask1 = new Subtask("Сдать финальное задание", "надо!", 3);
-        Subtask subtask2 = new Subtask("Купить молоко", "1%", 4);
+        Subtask subtask2 = new Subtask("Купить молоко", "1%", 9);
         Subtask subtask3 = new Subtask("Купить хлеб", ")))", 4);
 
         System.out.println(task1);
@@ -34,7 +34,8 @@ public class Main {
         Subtask updatedSubtask = new Subtask("Сдать финальное задание", "надо!", 3, 5,Status.DONE);
         taskManager.updateSubtask(updatedSubtask);
         taskManager.deleteTasks();
-        taskManager.deleteByEpicId(4);
+        taskManager.deleteEpicById(4);
+        taskManager.deleteSubtasks();
 
         System.out.println("_____________________________________________");
 
