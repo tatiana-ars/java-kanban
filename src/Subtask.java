@@ -18,6 +18,7 @@ public class Subtask extends Task {
         return this.epicId;
     }
 
+    @Override
     public String toString() {
         int var10000 = this.epicId;
         return "Subtask{epicId=" + var10000 + ", name='" + this.getName() + "', description='" + this.getDescription() + "', id=" + this.getId() + ", status=" + String.valueOf(this.getStatus()) + "}";

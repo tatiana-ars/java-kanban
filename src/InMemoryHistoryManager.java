@@ -8,7 +8,11 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void add(Task task) {
-        this.history.add(task);
+        if (task == null) {
+            return;
+        }
+        Task taskCopy = new Task(task);
+        this.history.add(taskCopy);
         if (this.history.size() > 10) {
             this.history.remove(0);
         }

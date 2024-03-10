@@ -48,18 +48,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public Task getTaskById(int taskId) {
-        this.historyManager.add((Task)this.tasks.get(taskId));
-        return (Task)this.tasks.get(taskId);
+        this.historyManager.add(this.tasks.get(taskId));
+        return this.tasks.get(taskId);
     }
 
-    public Task getEpicById(int epicId) {
-        this.historyManager.add((Task)this.epics.get(epicId));
-        return (Task)this.epics.get(epicId);
+    public Epic getEpicById(int epicId) {
+        this.historyManager.add(this.epics.get(epicId));
+        return this.epics.get(epicId);
     }
 
-    public Task getSubtaskById(int subtaskId) {
-        this.historyManager.add((Task)this.subtasks.get(subtaskId));
-        return (Task)this.subtasks.get(subtaskId);
+    public Subtask getSubtaskById(int subtaskId) {
+        this.historyManager.add(this.subtasks.get(subtaskId));
+        return this.subtasks.get(subtaskId);
     }
 
     public void createTask(Task task) {

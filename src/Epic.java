@@ -8,6 +8,11 @@ public class Epic extends Task {
         this.setStatus(Status.NEW);
     }
 
+    public Epic(String name, String description, int id) {
+        super(name, description);
+        this.setId(id);
+    }
+
     public ArrayList<Integer> getSubtasksIdInEpic() {
         return this.subtasksIdInEpic;
     }
@@ -16,6 +21,7 @@ public class Epic extends Task {
         this.subtasksIdInEpic = subtasksIdInEpic;
     }
 
+    @Override
     public String toString() {
         String var10000 = String.valueOf(this.subtasksIdInEpic);
         return "Epic{subtasksIdInEpic=" + var10000 + ", id=" + this.getId() + ", name='" + this.getName() + "', description='" + this.getDescription() + "', status=" + String.valueOf(this.getStatus()) + "}";
