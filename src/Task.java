@@ -9,7 +9,7 @@ public class Task {
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        status = Status.NEW;
+        this.status = Status.NEW;
     }
 
     public Task(String name, String description, Status status) {
@@ -19,7 +19,7 @@ public class Task {
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(int id) {
@@ -27,7 +27,7 @@ public class Task {
     }
 
     public Status getStatus() {
-        return status;
+        return this.status;
     }
 
     public void setStatus(Status status) {
@@ -35,33 +35,30 @@ public class Task {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
-    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return id == task.id;
+        if (this == o) {
+            return true;
+        } else if (o != null && this.getClass() == o.getClass()) {
+            Task task = (Task)o;
+            return this.id == task.id;
+        } else {
+            return false;
+        }
     }
 
-    @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(new Object[]{this.id});
     }
 
-    @Override
     public String toString() {
-        return "Task{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+        String var10000 = this.name;
+        return "Task{name='" + var10000 + "', description='" + this.description + "', id=" + this.id + ", status=" + String.valueOf(this.status) + "}";
     }
 }

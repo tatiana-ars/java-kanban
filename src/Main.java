@@ -18,7 +18,9 @@ public class Main {
         System.out.println(subtask2);
         System.out.println(subtask3);
 
-        TaskManager taskManager = new TaskManager();
+
+
+        TaskManager taskManager = Managers.getDefaultTaskManager();
 
         taskManager.createTask(task1);
         taskManager.createTask(task2);
