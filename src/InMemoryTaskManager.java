@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -15,95 +14,92 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public ArrayList<Task> getTasks() {
-        return new ArrayList(this.tasks.values());
+        return new ArrayList(tasks.values());
     }
 
     public ArrayList<Epic> getEpics() {
-        return new ArrayList(this.epics.values());
+        return new ArrayList(epics.values());
     }
 
     public ArrayList<Subtask> getSubtascs() {
-        return new ArrayList(this.subtasks.values());
+        return new ArrayList(subtasks.values());
     }
 
     public void deleteTasks() {
-        this.tasks.clear();
+        tasks.clear();
     }
 
     public void deleteEpics() {
-        this.epics.clear();
-        this.subtasks.clear();
+        epics.clear();
+        subtasks.clear();
     }
 
     public void deleteSubtasks() {
-        this.subtasks.clear();
-        Iterator var1 = this.epics.values().iterator();
+        subtasks.clear();
 
-        while(var1.hasNext()) {
-            Epic epic = (Epic)var1.next();
+        for (Epic epic : epics.values()) {
             epic.getSubtasksIdInEpic().clear();
             epic.setStatus(Status.NEW);
         }
-
     }
 
     public Task getTaskById(int taskId) {
-        this.historyManager.add(this.tasks.get(taskId));
-        return this.tasks.get(taskId);
+        historyManager.add(tasks.get(taskId));
+        return tasks.get(taskId);
     }
 
     public Epic getEpicById(int epicId) {
-        this.historyManager.add(this.epics.get(epicId));
-        return this.epics.get(epicId);
+        historyManager.add(epics.get(epicId));
+        return epics.get(epicId);
     }
 
     public Subtask getSubtaskById(int subtaskId) {
-        this.historyManager.add(this.subtasks.get(subtaskId));
-        return this.subtasks.get(subtaskId);
+        historyManager.add(subtasks.get(subtaskId));
+        return subtasks.get(subtaskId);
     }
 
     public void createTask(Task task) {
         if (task != null) {
-            task.setId(this.id);
-            this.tasks.put(this.id, task);
-            ++this.id;
+            task.setId(id);
+            tasks.put(id, task);
+            id++;
         }
 
     }
 
     public void createEpic(Epic epic) {
         if (epic != null) {
-            epic.setId(this.id);
-            this.epics.put(this.id, epic);
-            ++this.id;
+            epic.setId(id);
+            epics.put(id, epic);
+            id++;
         }
 
     }
 
     public void createSubtask(Subtask subtask) {
         if (subtask != null) {
-            Epic thisEpic = (Epic)this.epics.get(subtask.getEpicId());
+            Epic thisEpic = epics.get(subtask.getEpicId());
             if (thisEpic != null) {
-                subtask.setId(this.id);
-                this.subtasks.put(this.id, subtask);
-                thisEpic.getSubtasksIdInEpic().add(this.id);
-                this.checkEpic(subtask.getEpicId());
-                ++this.id;
+                subtask.setId(id);
+                subtasks.put(id, subtask);
+                thisEpic.getSubtasksIdInEpic().add(id);
+                checkEpic(subtask.getEpicId());
+                id++;
             }
         }
 
     }
 
     public void updateTask(Task updateTask) {
-        if (this.tasks.containsKey(updateTask.getId())) {
-            this.tasks.put(updateTask.getId(), updateTask);
+        if (tasks.containsKey(updateTask.getId())) {
+            tasks.put(updateTask.getId(), updateTask);
         }
 
     }
 
     public void updateEpic(Epic updateEpic) {
-        if (this.epics.containsKey(updateEpic.getId())) {
-            this.epics.put(updateEpic.getId(), updateEpic);
+        if (epics.containsKey(updateEpic.getId())) {
+            epics.put(updateEpic.getId(), updateEpic);
         }
 
     }
@@ -111,10 +107,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubtask(Subtask updateSubtask) {
         if (updateSubtask != null) {
             int epicId = updateSubtask.getEpicId();
-            if (this.epics.get(epicId) != null) {
-                if (this.subtasks.containsKey(updateSubtask.getId())) {
-                    this.subtasks.put(updateSubtask.getId(), updateSubtask);
-                    this.checkEpic(epicId);
+            if (epics.get(epicId) != null) {
+                if (subtasks.containsKey(updateSubtask.getId())) {
+                    subtasks.put(updateSubtask.getId(), updateSubtask);
+                    checkEpic(epicId);
                 }
 
             }
@@ -122,73 +118,64 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void deleteTaskById(int taskId) {
-        this.tasks.remove(taskId);
+        tasks.remove(taskId);
     }
 
     public void deleteEpicById(int epicId) {
-        Epic thisEpic = (Epic)this.epics.remove(epicId);
+        Epic thisEpic = epics.remove(epicId);
         ArrayList<Integer> subtusksId = thisEpic.getSubtasksIdInEpic();
-        Iterator var4 = subtusksId.iterator();
 
-        while(var4.hasNext()) {
-            int id = (Integer)var4.next();
-            this.subtasks.remove(id);
+        for (int id : subtusksId) {
+            subtasks.remove(id);
         }
-
     }
 
     public void deleteSubtaskById(int subtaskId) {
-        int epicId = ((Subtask)this.subtasks.get(subtaskId)).getEpicId();
-        this.subtasks.remove(subtaskId);
-        ArrayList<Integer> substaksId = ((Epic)this.epics.get(epicId)).getSubtasksIdInEpic();
+        int epicId = (subtasks.get(subtaskId)).getEpicId();
+        subtasks.remove(subtaskId);
+        ArrayList<Integer> substaksId = (epics.get(epicId)).getSubtasksIdInEpic();
         substaksId.remove(subtaskId);
-        this.checkEpic(epicId);
+        checkEpic(epicId);
     }
 
     public ArrayList<Subtask> getSubtasksFromEpic(int epicId) {
         ArrayList<Subtask> subtasksInEpic = new ArrayList();
-        Epic thisEpic = (Epic)this.epics.get(epicId);
+        Epic thisEpic = epics.get(epicId);
         ArrayList<Integer> subtasksIdInEpic = thisEpic.getSubtasksIdInEpic();
-        Iterator var5 = subtasksIdInEpic.iterator();
 
-        while(var5.hasNext()) {
-            int substucId = (Integer)var5.next();
-            subtasksInEpic.add((Subtask)this.subtasks.get(substucId));
+        for (int subtaskId : subtasksIdInEpic) {
+            subtasksInEpic.add(subtasks.get(subtaskId));
         }
 
         return subtasksInEpic;
     }
 
     private void checkEpic(int epicId) {
-        Epic thisEpic = (Epic)this.epics.get(epicId);
+        Epic thisEpic = epics.get(epicId);
         ArrayList<Integer> subtasksIdInThisEpic = thisEpic.getSubtasksIdInEpic();
         if (subtasksIdInThisEpic.size() == 0) {
             thisEpic.setStatus(Status.NEW);
-        } else {
-            int checkDone = 0;
-            Iterator var5 = subtasksIdInThisEpic.iterator();
+            return;
+        }
 
-            while(var5.hasNext()) {
-                Integer id = (Integer)var5.next();
-                Subtask thisSubtask = (Subtask)this.subtasks.get(id);
-                if (thisSubtask.getStatus() == Status.IN_PROGRESS) {
-                    thisEpic.setStatus(Status.IN_PROGRESS);
-                    return;
-                }
+        int checkDone = 0;
 
-                if (thisSubtask.getStatus() == Status.DONE) {
-                    ++checkDone;
-                }
+        for (int id : subtasksIdInThisEpic) {
+            Subtask thisSubtask = subtasks.get(id);
+            if (thisSubtask.getStatus() == Status.IN_PROGRESS) {
+                thisEpic.setStatus(Status.IN_PROGRESS);
+                return;
+            } else if (thisSubtask.getStatus() == Status.DONE) {
+                checkDone++;
             }
+        }
 
-            if (subtasksIdInThisEpic.size() == checkDone) {
+        if (subtasksIdInThisEpic.size() == checkDone) {
                 thisEpic.setStatus(Status.DONE);
-            }
-
         }
     }
 
     public List<Task> getHistory() {
-        return this.historyManager.getHistory();
+        return historyManager.getHistory();
     }
 }

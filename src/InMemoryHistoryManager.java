@@ -11,15 +11,19 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (task == null) {
             return;
         }
-        Task taskCopy = new Task(task);
-        this.history.add(taskCopy);
-        if (this.history.size() > 10) {
-            this.history.remove(0);
+//        Task taskCopy = new Task(task);
+//        this.history.add(taskCopy);
+//        В список List<Task> history клалась копия задачи для того,
+//        чтобы при изменении объекта в истории сохранялась копия без изменений.
+
+        history.add(task);
+        if (history.size() > 10) {
+            history.remove(0);
         }
 
     }
 
     public List<Task> getHistory() {
-        return new ArrayList(this.history);
+        return new ArrayList(history);
     }
 }

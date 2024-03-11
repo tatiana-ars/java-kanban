@@ -8,14 +8,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
-    TaskManager taskManager;
+    private TaskManager taskManager;
+
     @BeforeEach
     void beforeEach() {
         this.taskManager = Managers.getDefaultTaskManager();
     }
 
     @Test
-    void createTask_ShouldSaveTask() {
+    void createTaskShouldSaveTask() {
         int count = this.taskManager.getTasks().size();
         this.taskManager.createTask(new Task("a", "b"));
         int count2 = this.taskManager.getTasks().size();
@@ -24,7 +25,7 @@ class InMemoryTaskManagerTest {
 
 
     @Test
-    void createEpic_ShouldSaveEpic() {
+    void createEpicShouldSaveEpic() {
         int count = this.taskManager.getEpics().size();
         this.taskManager.createEpic(new Epic("a", "b"));
         int count2 = this.taskManager.getEpics().size();
@@ -32,7 +33,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void createSubtask_ShouldSaveSubtask() {
+    void createSubtaskShouldSaveSubtask() {
         int count = this.taskManager.getSubtascs().size();
         Epic epic = new Epic("a", "b");
         taskManager.createEpic(epic);
@@ -42,14 +43,14 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void createTask_ShouldGenerateId(){
+    void createTaskShouldGenerateId(){
         Task task = new Task("a", "b");
         taskManager.createTask(task);
         Assertions.assertTrue(task.getId() != 0);
     }
 
     @Test
-    void  getTaskById_ShouldReturnTaskById() {
+    void  getTaskByIdShouldReturnTaskById() {
         Task task = new Task("a", "b", Status.NEW, 1);
         Task task1 = new Task("a", "b");
         taskManager.createTask(task1);
@@ -57,7 +58,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void  getEpicById_ShouldReturnEpicById() {
+    void  getEpicByIdShouldReturnEpicById() {
         Epic epic = new Epic("a", "b",  1);
         Epic epic1 = new Epic("a", "b");
         taskManager.createEpic(epic1);
@@ -65,7 +66,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void  getSubtaskById_ShouldReturnSubtaskById() {
+    void  getSubtaskByIdShouldReturnSubtaskById() {
         Subtask subtask = new Subtask("a", "b",  1, 2, Status.NEW);
         Subtask subtask1 = new Subtask("a", "b", 1);
         taskManager.createEpic(new Epic("b", "c"));
@@ -74,7 +75,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void deleteTasks_ShouldDeleteAllTasksFromList() {
+    void deleteTasksShouldDeleteAllTasksFromList() {
         Task task = new Task("a", "b");
         this.taskManager.createTask(task);
         this.taskManager.deleteTasks();
@@ -82,7 +83,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void createTask_TaskWithIdSouldNotConflictWithTask() {
+    void createTaskTaskWithIdShouldNotConflictWithTask() {
         Task task1 = new Task("a", "b");
         Task task2 = new Task("a", "b");
         this.taskManager.createTask(task1);
@@ -92,7 +93,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void updateTask_TaskInTaskManagerShouldBeEqualsWithUpdatedTask() {
+    void updateTaskTaskInTaskManagerShouldBeEqualsWithUpdatedTask() {
         Task task1 = new Task("a", "b");
         taskManager.createTask(task1);
         int id = task1.getId();
@@ -115,7 +116,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void createTask_newTaskShouldBeEqualsWithTaskInManager() {
+    void createTaskNewTaskShouldBeEqualsWithTaskInManager() {
         Task task = new Task("a", "b");
         this.taskManager.createTask(task);
         Task task1 = this.taskManager.getTaskById(task.getId());

@@ -14,31 +14,31 @@ public interface TaskManager {
 
     void deleteSubtasks();
 
-    Task getTaskById(int var1);
+    Task getTaskById(int taskId);
 
-    Task getEpicById(int var1);
+    Task getEpicById(int epicId);
 
-    Task getSubtaskById(int var1);
+    Task getSubtaskById(int subtaskId);
 
-    void createTask(Task var1);
+    void createTask(Task task);
 
-    void createEpic(Epic var1);
+    void createEpic(Epic epic);
 
-    void createSubtask(Subtask var1);
+    void createSubtask(Subtask subtask);
 
-    void updateTask(Task var1);
+    void updateTask(Task updateTask);
 
-    void updateEpic(Epic var1);
+    void updateEpic(Epic updateEpic);
 
-    void updateSubtask(Subtask var1);
+    void updateSubtask(Subtask updateSubtask);
 
-    void deleteTaskById(int var1);
+    void deleteTaskById(int taskId);
 
-    void deleteEpicById(int var1);
+    void deleteEpicById(int epicId);
 
-    void deleteSubtaskById(int var1);
+    void deleteSubtaskById(int subtaskId);
 
-    ArrayList<Subtask> getSubtasksFromEpic(int var1);
+    ArrayList<Subtask> getSubtasksFromEpic(int epicId);
 
     List<Task> getHistory();
 }

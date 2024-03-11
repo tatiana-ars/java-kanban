@@ -6,8 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskTest {
 
     @Test
-    void testEquals_TasksShouldBeEqualsIfIdEquals() {
-        TaskManager taskManager = Managers.getDefaultTaskManager();
+    void testEqualsTasksShouldBeEqualsIfIdEquals() {
 
         Task task = new Task("a", "b", Status.IN_PROGRESS, 1);
         Task task1 = new Task("c","d", Status.NEW, 1);

@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ManagersTest {
 
     @Test
-    void test_getDefaultTaskManager() {
+    void testGetDefaultTaskManager() {
         TaskManager taskManager = Managers.getDefaultTaskManager();
         Assertions.assertTrue(taskManager instanceof InMemoryTaskManager);
     }

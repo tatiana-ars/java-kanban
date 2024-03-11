@@ -7,7 +7,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
-    TaskManager taskManager;
+    private TaskManager taskManager;
 
     @BeforeEach
     void beforeEach() {
@@ -15,7 +15,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void add_ShouldAddTaskToHistoryList() {
+    void addShouldAddTaskToHistoryList() {
         Task task = new Task("a", "b");
         taskManager.createTask(task);
         taskManager.getTaskById(task.getId());
@@ -23,13 +23,13 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void tasksInHistoryManagerSaveVersion() {
+    void tasksInHistoryManagerShouldSaveVersion() {
         Task task = new Task("a", "b");
-        this.taskManager.createTask(task);
-        this.taskManager.getTaskById(task.getId());
+        taskManager.createTask(task);
+        taskManager.getTaskById(task.getId());
         Task updatedTask = new Task("c", "d", Status.IN_PROGRESS, 1);
-        this.taskManager.updateTask(updatedTask);
-        Assertions.assertEquals(this.taskManager.getHistory().get(0), task);
+        taskManager.updateTask(updatedTask);
+        Assertions.assertEquals(taskManager.getHistory().get(0), task);
     }
 
 }

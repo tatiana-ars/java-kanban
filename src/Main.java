@@ -32,6 +32,8 @@ public class Main {
 
         System.out.println(taskManager);
 
+        taskManager.deleteEpicById(4);
+
 
         Subtask updatedSubtask = new Subtask("Сдать финальное задание", "надо!", 3, 5,Status.DONE);
         taskManager.updateSubtask(updatedSubtask);
