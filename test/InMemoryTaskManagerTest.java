@@ -16,7 +16,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void createTaskShouldSaveTask() {
+    void testSreateTaskShouldSaveTask() {
         int count = this.taskManager.getTasks().size();
         this.taskManager.createTask(new Task("a", "b"));
         int count2 = this.taskManager.getTasks().size();
@@ -116,23 +116,27 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void createTaskNewTaskShouldBeEqualsWithTaskInManager() {
+    void testCreateTaskNewTaskShouldBeEqualsWithTaskInManager() {
         Task task = new Task("a", "b");
         this.taskManager.createTask(task);
         Task task1 = this.taskManager.getTaskById(task.getId());
         Assertions.assertTrue(Objects.equals(task.getName(), task1.getName()) && Objects.equals(task.getDescription(), task1.getDescription()));
+
+        Assertions.assertEquals(task.getName(), task1.getName());
+        Assertions.assertEquals(task.getDescription(), task1.getDescription());
     }
 
     @Test
-    void newEpicEqualsEpcInManager() {
+    void testCreateEpicNewEpicShouldBeEqualsWithEpicInManager() {
         Epic epic = new Epic("a", "b");
         this.taskManager.createEpic(epic);
         Task epic1 = this.taskManager.getEpicById(epic.getId());
         Assertions.assertTrue(Objects.equals(epic.getName(), epic1.getName()) && Objects.equals(epic.getDescription(), epic1.getDescription()));
+
     }
 
     @Test
-    void newSubtaskEqualsSubtaskInManager() {
+    void testCreateSubtaskNewSubtaskShouldBeEqualsWithSubtaskInManager() {
         Epic epic = new Epic("a", "b");
         Subtask subtask = new Subtask("a", "b", 1);
         this.taskManager.createEpic(epic);

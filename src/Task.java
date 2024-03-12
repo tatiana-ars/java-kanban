@@ -19,13 +19,6 @@ public class Task {
         this.setId(id);
     }
 
-    public Task(Task task) {
-        this.name = task.name;
-        this.description = task.description;
-        this.id = task.id;
-        this.status = task.status;
-    }
-
     public int getId() {
         return this.id;
     }
@@ -57,9 +50,8 @@ public class Task {
         } else if (o != null && this.getClass() == o.getClass()) {
             Task task = (Task)o;
             return this.id == task.id;
-        } else {
-            return false;
         }
+            return false;
     }
 
     @Override
@@ -69,7 +61,6 @@ public class Task {
 
     @Override
     public String toString() {
-        String var10000 = this.name;
-        return "Task{name='" + var10000 + "', description='" + this.description + "', id=" + this.id + ", status=" + String.valueOf(this.status) + "}";
+        return "Task{name='" + this.name + "', description='" + this.description + "', id=" + this.id + ", status=" + String.valueOf(this.status) + "}";
     }
 }

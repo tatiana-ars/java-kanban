@@ -1,5 +1,5 @@
 public class Managers {
-    public Managers() {
+    private Managers() {
     }
 
     public static TaskManager getDefaultTaskManager() {

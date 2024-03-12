@@ -7,29 +7,25 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
-    private TaskManager taskManager;
+    private InMemoryHistoryManager historyManager;
 
     @BeforeEach
     void beforeEach() {
-        taskManager = Managers.getDefaultTaskManager();
+        historyManager; = new InMemoryHistoryManager();
     }
 
     @Test
-    void addShouldAddTaskToHistoryList() {
+    void testAddShouldAddNotNullTaskToHistory() {
         Task task = new Task("a", "b");
-        taskManager.createTask(task);
-        taskManager.getTaskById(task.getId());
-        Assertions.assertTrue(taskManager.getTasks().contains(task));
+        Assertions.assertNotNull(historyManager.add(task));
     }
 
     @Test
-    void tasksInHistoryManagerShouldSaveVersion() {
-        Task task = new Task("a", "b");
-        taskManager.createTask(task);
-        taskManager.getTaskById(task.getId());
-        Task updatedTask = new Task("c", "d", Status.IN_PROGRESS, 1);
-        taskManager.updateTask(updatedTask);
-        Assertions.assertEquals(taskManager.getHistory().get(0), task);
+    void testAddHistoryShouldNotBeLongerThan10() {
+        int i = 0;
+        while (int i < 11) {
+            historyManager.add(new Task("a", "b"));
+        }
+        Assertions.assertTrue(history.size() == 10);
     }
-
 }
