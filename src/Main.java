@@ -30,7 +30,9 @@ public class Main {
         taskManager.createSubtask(subtask2);
         taskManager.createSubtask(subtask3);
 
-        System.out.println(taskManager);
+        System.out.println(task1);
+        System.out.println(epic1);
+        System.out.println(subtask1);
 
         taskManager.deleteEpicById(4);
 

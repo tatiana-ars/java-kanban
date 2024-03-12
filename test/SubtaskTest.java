@@ -11,7 +11,7 @@ class SubtaskTest {
         Subtask subtask = new Subtask("a", "b", 1, 5, Status.IN_PROGRESS);
         Subtask subtask1 = new Subtask("c","d",8,5,  Status.NEW);
 
-        Assertions.assertTrue(subtask.equals(subtask1));
+        Assertions.assertEquals(subtask, subtask1);
 
     }
 

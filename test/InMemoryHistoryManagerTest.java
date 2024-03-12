@@ -11,21 +11,23 @@ class InMemoryHistoryManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        historyManager; = new InMemoryHistoryManager();
+        historyManager = new InMemoryHistoryManager();
     }
 
     @Test
     void testAddShouldAddNotNullTaskToHistory() {
         Task task = new Task("a", "b");
-        Assertions.assertNotNull(historyManager.add(task));
+        historyManager.add(task);
+        Assertions.assertNotNull(historyManager.getHistory().get(0));
     }
 
     @Test
     void testAddHistoryShouldNotBeLongerThan10() {
         int i = 0;
-        while (int i < 11) {
+        while (i < 11) {
             historyManager.add(new Task("a", "b"));
+            i++;
         }
-        Assertions.assertTrue(history.size() == 10);
+        Assertions.assertTrue(historyManager.getHistory().size() == 10);
     }
 }

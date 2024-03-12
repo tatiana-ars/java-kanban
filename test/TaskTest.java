@@ -11,7 +11,7 @@ class TaskTest {
         Task task = new Task("a", "b", Status.IN_PROGRESS, 1);
         Task task1 = new Task("c","d", Status.NEW, 1);
 
-        Assertions.assertTrue(task.equals(task1));
+        Assertions.assertEquals(task, task1);
 
     }
 }
