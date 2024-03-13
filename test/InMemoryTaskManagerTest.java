@@ -16,7 +16,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void testCreateTaskShouldSaveTaskInTasks() {
+    void testCreateTaskShouldAddTaskToTasksList() {
         int count = taskManager.getTasks().size();
         taskManager.createTask(new Task("a", "b"));
         int count2 = taskManager.getTasks().size();
@@ -25,7 +25,7 @@ class InMemoryTaskManagerTest {
 
 
     @Test
-    void testCreateEpicShouldSaveEpicInEpics() {
+    void testCreateEpicShouldAddpicToEpicsList() {
         int count = taskManager.getEpics().size();
         taskManager.createEpic(new Epic("a", "b"));
         int count2 = taskManager.getEpics().size();
@@ -33,7 +33,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void testCreateSubtaskShouldSaveSubtaskInSubtasks() {
+    void testCreateSubtaskShouldAddSubtaskToSubtasksList() {
         int count = taskManager.getSubtasks().size();
         Epic epic = new Epic("a", "b");
         taskManager.createEpic(epic);
@@ -83,7 +83,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void testCreateTaskTaskWithIdShouldNotConflictWithTask() {
+    void testCreateTaskTaskWithIdShouldNotConflictWithTaskInTaskManager() {
         Task task1 = new Task("a", "b");
         Task task2 = new Task("a", "b");
         taskManager.createTask(task1);
