@@ -156,6 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (int id : subtusksId) {
             subtasks.remove(id);
+            historyManager.remove(id);
         }
         historyManager.remove(epicId);
     }

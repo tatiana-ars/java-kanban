@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
@@ -10,8 +7,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (historyMap.containsKey(task.getId())) {
-            removeNode(historyMap.get(task.getId()));
+        final Node node = historyMap.get(task.getId());
+        if (node != null) {
+            removeNode(node);
         }
         Node newNode = new Node(task);
         linkLast(newNode);
@@ -25,46 +23,51 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private List<Task> getTasks() {
-        List<Task> history = new ArrayList<>();
-        for (Node node: historyMap.values()) {
-            history.add(node.task);
+        LinkedList<Task> history = new LinkedList<>();
+        Node currentNode = head;
+        while (currentNode != null) {
+            history.addFirst(currentNode.getTask());
+            currentNode = currentNode.getNext();
         }
         return history;
     }
 
     @Override
     public void remove(int id) {
-        if (historyMap.containsKey(id)) {
-            removeNode(historyMap.get(id));
+        final Node node = historyMap.get(id);
+        if (node != null) {
+            removeNode(node);
         }
     }
 
     private void linkLast(Node newNode) {
         if (head == null) {
-            head = newNode;
-            tail = newNode;
+            head = tail = newNode;
         } else {
-            tail.next = newNode;
-            newNode.prev = tail;
+            tail.setNext(newNode);
+            newNode.setPrev(tail);
             tail = newNode;
         }
     }
 
     private void removeNode(Node node) {
-        if (head == null || tail == null) {
+        if (head == null && tail == null) {
             return;
         }
 
+        Node nextNode = node.getNext();
+        Node prevNode = node.getPrev();
+
         if (node == head) {
-            head = node.next;
+            head = nextNode;
         } else {
-            node.prev.next = node.next;
+            prevNode.setNext(nextNode);
         }
         if (node == tail) {
-            tail = node.prev;
+            tail = prevNode;
         } else {
-            node.next.prev = node.prev;
+            nextNode.setPrev(prevNode);
         }
-        historyMap.remove(node.task.getId());
+        historyMap.remove(node.getTask().getId());
     }
 }
