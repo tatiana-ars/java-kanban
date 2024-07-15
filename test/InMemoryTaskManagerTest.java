@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.List;
+import java.util.ArrayList;
 
 import java.util.Objects;
 
@@ -142,5 +144,21 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(subtask.getName(), SubtaskInManager.getName());
         Assertions.assertEquals(subtask.getDescription(), SubtaskInManager.getDescription());
         Assertions.assertEquals(subtask.getEpicId(), SubtaskInManager.getEpicId());
+    }
+
+    @Test
+    void testDeleteSubtaskShouldDeleteSubtaskIdFromEpic() {
+        Epic epic = new Epic("a", "b");
+        taskManager.createEpic(epic);
+        Subtask subtask1 = new Subtask("a", "1", 1);
+        Subtask subtask2 = new Subtask("b", "2", 1);
+        Subtask subtask3 = new Subtask("c", "3", 1);
+        taskManager.createSubtask(subtask1);
+        taskManager.createSubtask(subtask2);
+        taskManager.createSubtask(subtask3);
+        taskManager.deleteSubtaskById(2);
+        assertTrue(epic.getSubtasksIdInEpic().contains(3));
+        assertTrue(epic.getSubtasksIdInEpic().contains(4));
+        assertTrue(epic.getSubtasksIdInEpic().size() == 2);
     }
 }
