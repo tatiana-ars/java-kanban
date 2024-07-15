@@ -22,12 +22,23 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void testAddHistoryShouldNotBeLongerThan10() {
-        int i = 0;
-        while (i < 11) {
-            historyManager.add(new Task("a", "b"));
-            i++;
-        }
-        Assertions.assertTrue(historyManager.getHistory().size() == 10);
+    void testRemoveShouldRemoveTaskFromHistory() {
+        Task task1 = new Task("Task1", "a");
+        historyManager.add(task1);
+        historyManager.remove(task1.getId());
+        List<Task> history = historyManager.getHistory();
+        Assertions.assertEquals(0, history.size());
     }
+
+    @Test
+    void testAddShouldRemoveOldVersionOfTaskFromHistory() {
+        Task task = new Task("Task", "a");
+        historyManager.add(task);
+        task = new Task("Task", "b");
+        historyManager.add(task);
+        List<Task> history = historyManager.getHistory();
+        Assertions.assertEquals(1, history.size());
+        Assertions.assertEquals("b", history.get(0).getDescription());
+    }
+
 }
