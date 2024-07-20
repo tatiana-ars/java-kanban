@@ -81,33 +81,33 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(toString(subtask) + "\n");
             }
         } catch (IOException e) {
-            throw new ManagerSaveException ("Ошибка при сохранении данных в файл" + e.getMessage());
+            throw new ManagerSaveException("Ошибка при сохранении данных в файл" + e.getMessage());
         }
     }
 
 
-        public static FileBackedTaskManager loadFromFile(File file) {
-            FileBackedTaskManager manager = new FileBackedTaskManager (file, new InMemoryHistoryManager());
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String taskLine;
-                reader.readLine();
-                while ((taskLine = reader.readLine()) != null) {
-                    Task task = fromString(taskLine);
-                    if (task != null) {
-                        if (task instanceof Subtask) {
-                            manager.createSubtask((Subtask) task);
-                        } else if (task instanceof Epic) {
-                            manager.createEpic((Epic) task);
-                        } else {
-                            manager.createTask(task);
-                        }
+    public static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager manager = new FileBackedTaskManager(file, new InMemoryHistoryManager());
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String taskLine;
+            reader.readLine();
+            while ((taskLine = reader.readLine()) != null) {
+                Task task = fromString(taskLine);
+                if (task != null) {
+                    if (task instanceof Subtask) {
+                        manager.createSubtask((Subtask) task);
+                    } else if (task instanceof Epic) {
+                        manager.createEpic((Epic) task);
+                    } else {
+                        manager.createTask(task);
                     }
                 }
-            } catch (IOException e) {
-                throw new ManagerSaveException("Ошибка при загрузке данных из файла" + e.getMessage());
             }
-            return manager;
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка при загрузке данных из файла" + e.getMessage());
         }
+        return manager;
+    }
 
 
     private String toString(Task task) {
