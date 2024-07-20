@@ -7,7 +7,7 @@ import java.io.File;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    final private File file;
+    private final File file;
 
     public FileBackedTaskManager(File file, HistoryManager historyManager) {
         super(historyManager);
