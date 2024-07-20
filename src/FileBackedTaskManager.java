@@ -109,7 +109,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
-
     private String toString(Task task) {
         if (task instanceof Subtask) {
             Subtask subtask = (Subtask) task;
