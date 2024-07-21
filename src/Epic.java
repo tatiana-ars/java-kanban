@@ -18,6 +18,11 @@ public class Epic extends Task {
     }
 
     @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
+    }
+
+    @Override
     public String toString() {
         String subtasksId = String.valueOf(subtasksIdInEpic);
         return "Epic{subtasksIdInEpic=" + subtasksId + ", id=" + getId() + ", name='" + getName() + "', description='" + getDescription() + "', status=" + String.valueOf(getStatus()) + "}";
