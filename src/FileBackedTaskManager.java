@@ -97,14 +97,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = fromString(taskLine);
                 manager.addTask(task);
             }
-            manager.setId(manager.findMaxId()+1);
+            manager.setId(manager.findMaxId() + 1);
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке данных из файла" + e.getMessage());
         }
         return manager;
     }
 
-    private void addTask (Task task) {
+    private void addTask(Task task) {
         if (task != null) {
             if (task.getType() == TaskType.SUBTASK) {
                 Subtask subtask = (Subtask) task;
