@@ -1,3 +1,6 @@
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
     private int epicId;
 
@@ -12,6 +15,16 @@ public class Subtask extends Task {
         this.epicId = epicId;
         this.setStatus(status);
         this.setId(id);
+    }
+
+    public Subtask(String name, String description, int epicId, int id, Status status, LocalDateTime startTime,
+                   Duration duration) {
+        super(name, description);
+        this.epicId = epicId;
+        this.setStatus(status);
+        this.setId(id);
+        this.setStartTime(startTime);
+        this.setDuration(duration);
     }
 
     public int getEpicId() {

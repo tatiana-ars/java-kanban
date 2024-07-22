@@ -1,3 +1,5 @@
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,35 +53,39 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTasks() {
-        for (Task task: tasks.values()) {
-            historyManager.remove(task.getId());
-        }
+        tasks.values().stream()
+                .map(Task::getId)
+                .forEach(historyManager::remove);
         tasks.clear();
     }
 
     @Override
     public void deleteEpics() {
-        for (Subtask subtask: subtasks.values()) {
-            historyManager.remove(subtask.getId());
-        }
-        for (Epic epic: epics.values()) {
-            historyManager.remove(epic.getId());
-        }
+        subtasks.values().stream()
+                .map(Subtask::getId)
+                .forEach(historyManager::remove);
+
+        epics.values().stream()
+                .map(Epic::getId)
+                .forEach(historyManager::remove);
+
         epics.clear();
         subtasks.clear();
     }
 
     @Override
     public void deleteSubtasks() {
-        for (Subtask subtask: subtasks.values()) {
-            historyManager.remove(subtask.getId());
-        }
+        subtasks.values().stream()
+                .map(Subtask::getId)
+                .forEach(historyManager::remove);
+
         subtasks.clear();
 
-        for (Epic epic : epics.values()) {
-            epic.getSubtasksIdInEpic().clear();
-            epic.setStatus(Status.NEW);
-        }
+        epics.values().stream()
+                .forEach(epic -> {
+                    epic.getSubtasksIdInEpic().clear();
+                    epic.setStatus(Status.NEW);
+                });
     }
 
     @Override
@@ -206,6 +212,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void checkEpic(int epicId) {
+        checkStatusEpic(epicId);
+        checkStartTimeEpic(epicId);
+        checkEndTimeEpic(epicId);
+        checkDurationEpic(epicId);
+    }
+
+    private void checkStatusEpic(int epicId) {
         Epic thisEpic = epics.get(epicId);
         ArrayList<Integer> subtasksIdInThisEpic = thisEpic.getSubtasksIdInEpic();
         if (subtasksIdInThisEpic.size() == 0) {
@@ -226,9 +239,57 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (subtasksIdInThisEpic.size() == checkDone) {
-                thisEpic.setStatus(Status.DONE);
+            thisEpic.setStatus(Status.DONE);
+        } else if (checkDone != 0) {
+            thisEpic.setStatus(Status.IN_PROGRESS);
         }
     }
+
+    private void checkStartTimeEpic(int epicId) {
+        Epic thisEpic = epics.get(epicId);
+        thisEpic.setStartTime(LocalDateTime.of(0, 1, 1, 0, 0, 0));
+        for (int id : thisEpic.getSubtasksIdInEpic()) {
+            Subtask thisSubtask = subtasks.get(id);
+            try {
+                if (thisSubtask.getStartTime().isBefore(thisEpic.getStartTime())) {
+                    thisEpic.setStartTime(thisSubtask.getStartTime());
+                }
+            } catch (NullPointerException e) {
+                System.out.println("Ошибка при сравнении StartTime: " + e.getMessage());
+            }
+
+        }
+    }
+
+    private void checkEndTimeEpic(int epicId) {
+        Epic thisEpic = epics.get(epicId);
+        thisEpic.setEndTime(LocalDateTime.of(0, 1, 1, 0, 0, 0));
+        for (int id : thisEpic.getSubtasksIdInEpic()) {
+            Subtask thisSubtask = subtasks.get(id);
+            try {
+                if (thisSubtask.getEndTime().isAfter(thisEpic.getEndTime())) {
+                    thisEpic.setEndTime(thisSubtask.getEndTime());
+                }
+            } catch (NullPointerException e) {
+                System.out.println("Ошибка при сравнении EndTime: " + e.getMessage());
+            }
+        }
+    }
+
+    private void checkDurationEpic(int epicId) {
+        Duration totalDuration = Duration.ofMinutes(0);
+        Epic thisEpic = epics.get(epicId);
+        for (int id : thisEpic.getSubtasksIdInEpic()) {
+            Subtask thisSubtask = subtasks.get(id);
+            try {
+                totalDuration = totalDuration.plus(thisSubtask.getDuration());
+            } catch (NullPointerException e) {
+                System.out.println("Ошибка при расчете totalDuration: " + e.getMessage());
+            }
+        }
+        thisEpic.setDuration(totalDuration);
+    }
+
 
     @Override
     public List<Task> getHistory() {
