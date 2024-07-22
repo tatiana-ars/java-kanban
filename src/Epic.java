@@ -20,7 +20,7 @@ public class Epic extends Task {
         return endTime;
     }
 
-    public void setEndTime (LocalDateTime endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
