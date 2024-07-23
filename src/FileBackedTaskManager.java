@@ -7,8 +7,6 @@ import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.TreeSet;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -16,22 +14,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static String HEADER = "id,type,name,status,description,startTime,endTime,duration,epic\n";
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private static TreeSet<Task> sortedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+
 
     public FileBackedTaskManager(File file, HistoryManager historyManager) {
         super(historyManager);
         this.file = file;
     }
 
-    public TreeSet<Task> getPrioritizedTasks() {
-        return sortedTasks;
-    }
-
     @Override
     public void createTask(Task task) {
         super.createTask(task);
         save();
-        addTaskToSortedTasks(task);
     }
 
     @Override
@@ -44,14 +37,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void createSubtask(Subtask subtask) {
         super.createSubtask(subtask);
         save();
-        addTaskToSortedTasks(subtask);
     }
 
     @Override
     public void updateTask(Task task) {
         super.updateTask(task);
         save();
-        addTaskToSortedTasks(task);
     }
 
     @Override
@@ -64,12 +55,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void updateSubtask(Subtask subtask) {
         super.updateSubtask(subtask);
         save();
-        addTaskToSortedTasks(subtask);
     }
 
     @Override
     public void deleteTaskById(int taskId) {
-        sortedTasks.remove(getTaskById(taskId));
         super.deleteTaskById(taskId);
         save();
     }
@@ -82,7 +71,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public void deleteSubtaskById(int subtaskId) {
-        sortedTasks.remove(getSubtaskById(subtaskId));
         super.deleteSubtaskById(subtaskId);
         save();
     }
@@ -91,12 +79,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(HEADER);
             for (Task task : getTasks()) {
+                if (task.getStartTime() == null) {
+                    break;
+                }
                 writer.write(toString(task) + "\n");
             }
             for (Epic epic : getEpics()) {
+                if (epic.getStartTime() == null) {
+                    break;
+                }
                 writer.write(toString(epic) + "\n");
             }
             for (Subtask subtask : getSubtasks()) {
+                if (subtask.getStartTime() == null) {
+                    break;
+                }
                 writer.write(toString(subtask) + "\n");
             }
         } catch (IOException e) {
@@ -121,30 +118,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
-    public static boolean isOverlay(Task task1, Task task2) {
-        if (task1.getEndTime().isBefore(task2.getStartTime())) {
-            return true;
-        } else if (task2.getEndTime().isBefore(task1.getStartTime())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void addTaskToSortedTasks(Task task) {
-        if (task.getStartTime() != null) {
-            for (Task taskS: sortedTasks) {
-                if (isOverlay(task, taskS)) {
-                    break;
-                }
-            }
-            sortedTasks.add(task);
-        }
-    }
-
     private void addTask(Task task) {
         if (task != null) {
-            addTaskToSortedTasks(task);
             if (task.getType() == TaskType.SUBTASK) {
                 Subtask subtask = (Subtask) task;
                 super.putSubtask(subtask);
@@ -178,23 +153,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String toString(Task task) {
-        if (task.getType() == TaskType.SUBTASK) {
-            Subtask subtask = (Subtask) task;
-            return String.format("%d,%s,%s,%s,%s,%s,%s,%s,%d",
-                    task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription(),
-                    task.getStartTime().format(formatter), task.getEndTime().format(formatter),
-                    task.getDuration().toString(), subtask.getEpicId());
-        } else if (task.getType() == TaskType.EPIC) {
-            return String.format("%d,%s,%s,%s,%s,%s,%s,%s",
-                    task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription(),
-                    task.getStartTime().format(formatter), task.getEndTime().format(formatter),
-                    task.getDuration().toString());
-        } else {
-            return String.format("%d,%s,%s,%s,%s,%s,%s,%s",
-                    task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription(),
-                    task.getStartTime().format(formatter), task.getEndTime().format(formatter),
-                    task.getDuration().toString());
+        try {
+            if (task.getType() == TaskType.SUBTASK) {
+                Subtask subtask = (Subtask) task;
+                return String.format("%d,%s,%s,%s,%s,%s,%s,%s,%d",
+                        task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription(),
+                        task.getStartTime().format(formatter), task.getEndTime().format(formatter),
+                        task.getDuration().toMinutes(), subtask.getEpicId());
+            } else if (task.getType() == TaskType.EPIC) {
+                return String.format("%d,%s,%s,%s,%s,%s,%s,%s",
+                        task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription(),
+                        task.getStartTime().format(formatter), task.getEndTime().format(formatter),
+                        task.getDuration().toMinutes());
+            } else {
+                return String.format("%d,%s,%s,%s,%s,%s,%s,%s",
+                        task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription(),
+                        task.getStartTime().format(formatter), task.getEndTime().format(formatter),
+                        task.getDuration().toMinutes());
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Ошибка в записи задачи в файл (не установлено время):" + e.getMessage());
+            return "";
         }
+
     }
 
     private static Task fromString(String str) {
