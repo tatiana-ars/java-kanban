@@ -237,10 +237,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.createTask(task3);
         taskManager.createTask(task4);
 
-        List<Task> prioritizedTasks = new ArrayList<>(taskManager.getPrioritizedTasks());
         List<Task> assertList = new ArrayList<>(Arrays.asList(task1, task4, task3));
 
-        assertEquals(prioritizedTasks, assertList);
+        assertEquals(taskManager.getPrioritizedTasks(), assertList);
     }
 
 }

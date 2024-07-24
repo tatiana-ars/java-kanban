@@ -27,23 +27,27 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<InMemoryTaskManag
     @Test
     public void testLoadFromFile() {
         Task task1 = new Task("1", "задача 1", Status.NEW, 1,
-                LocalDateTime.of(2024, 7, 1, 7, 0, 0), Duration.ofMinutes(20));
+                LocalDateTime.of(2024, 7, 10, 7, 0, 0), Duration.ofMinutes(20));
         Task task2 = new Task("2", "задача 2", Status.NEW, 2,
                 LocalDateTime.of(2024, 7, 1, 7, 0, 0), Duration.ofMinutes(60));
-        Task task3 = new Task("3", "задача 3", Status.NEW, 3,
-                LocalDateTime.of(2024, 7, 10, 7, 0, 0), Duration.ofMinutes(60));
-        Task task4 = new Task("4", "задача 4", Status.NEW, 4,
-                LocalDateTime.of(2024, 7, 9, 7, 0, 0), Duration.ofMinutes(60));
+        Epic epic = new Epic("Эпик", "эпик 1", 3);
+        Subtask subtask1 = new Subtask("1", "подзадача 1", 3, 9, Status.NEW,
+                LocalDateTime.of(2024, 7, 11, 7, 0, 0), Duration.ofMinutes(60));
+        Subtask subtask2 = new Subtask("2", "подзадача 2", 3, 9, Status.NEW,
+                LocalDateTime.of(2024, 7, 11, 7, 0, 0), Duration.ofMinutes(60));
+
         taskManager.createTask(task1);
         taskManager.createTask(task2);
-        taskManager.createTask(task3);
-        taskManager.createTask(task4);
-
-        List<Task> assertList = new ArrayList<>(Arrays.asList(task1, task2, task3, task4));
+        taskManager.createEpic(epic);
+        taskManager.createSubtask(subtask1);
+        taskManager.createSubtask(subtask2);
 
         FileBackedTaskManager fbTaskManager = FileBackedTaskManager.loadFromFile(file);
 
+        Assertions.assertEquals(fbTaskManager.getPrioritizedTasks(), taskManager.getPrioritizedTasks());
         Assertions.assertEquals(fbTaskManager.getTasks(), taskManager.getTasks());
+        Assertions.assertEquals(fbTaskManager.getSubtasks(), taskManager.getSubtasks());
+        Assertions.assertEquals(fbTaskManager.getEpics(), taskManager.getEpics());
     }
 
 }

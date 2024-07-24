@@ -40,8 +40,8 @@ public class InMemoryTaskManager implements TaskManager {
     private void addTaskToSortedTasks(Task task) {
         if (task.getStartTime() != null) {
             for (Task taskS : sortedTasks) {
-                if (isNotOverlay(task, taskS)) {
-                    break;
+                if (!isNotOverlay(task, taskS)) {
+                    return;
                 }
             }
             sortedTasks.add(task);
@@ -49,8 +49,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public TreeSet<Task> getPrioritizedTasks() {
-        return sortedTasks;
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(sortedTasks);
     }
 
     public static boolean isNotOverlay(Task task1, Task task2) {
@@ -171,6 +171,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task updateTask) {
         if (tasks.containsKey(updateTask.getId())) {
+            try {
+                sortedTasks.remove(tasks.get(updateTask.getId()));
+            } catch (NullPointerException e) {
+                System.out.println("Ошибка удаления задачи из TreeSet sortedTasks: " + e.getMessage());
+            }
             tasks.put(updateTask.getId(), updateTask);
             addTaskToSortedTasks(updateTask);
         }
@@ -190,6 +195,11 @@ public class InMemoryTaskManager implements TaskManager {
         if (updateSubtask != null) {
             int epicId = updateSubtask.getEpicId();
             if (subtasks.containsKey(updateSubtask.getId())) {
+                try {
+                    sortedTasks.remove(subtasks.get(updateSubtask.getId()));
+                } catch (NullPointerException e) {
+                    System.out.println("Ошибка удаления подзадачи из TreeSet sortedTasks:" + e.getMessage());
+                }
                 addTaskToSortedTasks(updateSubtask);
                 subtasks.put(updateSubtask.getId(), updateSubtask);
                 checkEpic(epicId);

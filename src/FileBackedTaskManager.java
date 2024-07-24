@@ -15,7 +15,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
-
     public FileBackedTaskManager(File file, HistoryManager historyManager) {
         super(historyManager);
         this.file = file;
@@ -79,21 +78,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(HEADER);
             for (Task task : getTasks()) {
-                if (task.getStartTime() == null) {
-                    break;
-                }
                 writer.write(toString(task) + "\n");
             }
             for (Epic epic : getEpics()) {
-                if (epic.getStartTime() == null) {
-                    break;
-                }
                 writer.write(toString(epic) + "\n");
             }
             for (Subtask subtask : getSubtasks()) {
-                if (subtask.getStartTime() == null) {
-                    break;
-                }
                 writer.write(toString(subtask) + "\n");
             }
         } catch (IOException e) {
@@ -111,7 +101,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = fromString(taskLine);
                 manager.addTask(task);
             }
-            manager.setId(manager.findMaxId() + 1);
+            manager.setId(manager.findMaxId());
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке данных из файла" + e.getMessage());
         }
@@ -172,8 +162,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         task.getDuration().toMinutes());
             }
         } catch (NullPointerException e) {
-            System.out.println("Ошибка в записи задачи в файл (не установлено время):" + e.getMessage());
-            return "";
+            if (task.getType() == TaskType.SUBTASK) {
+                Subtask subtask = (Subtask) task;
+                return String.format("%d,%s,%s,%s,%s,%d",
+                        task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription(),
+                        subtask.getEpicId());
+            } else if (task.getType() == TaskType.EPIC) {
+                return String.format("%d,%s,%s,%s,%s",
+                        task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription());
+            } else {
+                return String.format("%d,%s,%s,%s,%s",
+                        task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription());
+            }
         }
 
     }
@@ -185,9 +185,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = fields[2];
         Status status = Status.valueOf(fields[3]);
         String description = fields[4];
-        LocalDateTime startTime = LocalDateTime.parse(fields[5], formatter);
-        LocalDateTime endTime = LocalDateTime.parse(fields[6], formatter);
-        Duration duration = Duration.ofMinutes(Integer.parseInt(fields[7]));
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        Duration duration = null;
+        try {
+            startTime = LocalDateTime.parse(fields[5], formatter);
+            endTime = LocalDateTime.parse(fields[6], formatter);
+            duration = Duration.ofMinutes(Integer.parseInt(fields[7]));
+        } catch (RuntimeException e) {
+            System.out.println("Ошибка чтения из файла, время не задано: " + e.getMessage());
+        }
 
         final TaskType type = TaskType.valueOf(typeTask);
         if (type == TaskType.TASK) {
