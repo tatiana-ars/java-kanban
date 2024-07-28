@@ -41,4 +41,9 @@ class InMemoryHistoryManagerTest {
         Assertions.assertEquals("b", history.get(0).getDescription());
     }
 
+    @Test
+    void testGetNullHistory() {
+        Assertions.assertEquals(historyManager.getHistory().size(), 0);
+    }
+
 }
