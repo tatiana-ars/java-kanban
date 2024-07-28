@@ -115,18 +115,30 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int taskId) {
-        historyManager.add(tasks.get(taskId));
-        return tasks.get(taskId);
+        Task task = tasks.get(taskId);
+        if (task == null) {
+            throw new NotFoundException("Задача с id " + taskId + " не найдена.");
+        }
+        historyManager.add(task);
+        return task;
     }
 
     @Override
     public Epic getEpicById(int epicId) {
-        historyManager.add(epics.get(epicId));
-        return epics.get(epicId);
+        Epic epic = epics.get(epicId);
+        if (epic == null) {
+            throw new NotFoundException("Эпик с id " + epicId + " не найден.");
+        }
+        historyManager.add(epic);
+        return epic;
     }
 
     @Override
     public Subtask getSubtaskById(int subtaskId) {
+        Subtask subtask = subtasks.get(subtaskId);
+        if (subtask == null) {
+            throw new NotFoundException("Подзадача с id " + subtaskId + " не найдена.");
+        }
         historyManager.add(subtasks.get(subtaskId));
         return subtasks.get(subtaskId);
     }
@@ -178,6 +190,8 @@ public class InMemoryTaskManager implements TaskManager {
             }
             tasks.put(updateTask.getId(), updateTask);
             addTaskToSortedTasks(updateTask);
+        } else {
+            throw new NotFoundException("Задача с id " + updateTask.getId() + " не найдена.");
         }
 
     }
@@ -186,8 +200,9 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateEpic(Epic updateEpic) {
         if (epics.containsKey(updateEpic.getId())) {
             epics.put(updateEpic.getId(), updateEpic);
+        } else {
+            throw new NotFoundException("Эпик с id " + updateEpic.getId() + " не найден.");
         }
-
     }
 
     @Override
@@ -203,9 +218,9 @@ public class InMemoryTaskManager implements TaskManager {
                 addTaskToSortedTasks(updateSubtask);
                 subtasks.put(updateSubtask.getId(), updateSubtask);
                 checkEpic(epicId);
+            } else {
+                throw new NotFoundException("Эпик с id " + updateSubtask.getId() + " не найден.");
             }
-
-
         }
     }
 
