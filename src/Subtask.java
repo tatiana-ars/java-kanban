@@ -27,6 +27,15 @@ public class Subtask extends Task {
         this.setDuration(duration);
     }
 
+    public Subtask(String name, String description, int epicId, Status status, LocalDateTime startTime,
+                   Duration duration) {
+        super(name, description);
+        this.epicId = epicId;
+        this.setStatus(status);
+        this.setStartTime(startTime);
+        this.setDuration(duration);
+    }
+
     public int getEpicId() {
         return epicId;
     }
