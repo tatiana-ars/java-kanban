@@ -1,10 +1,10 @@
+import com.tatianaars.kanban.model.Task;
+import com.tatianaars.kanban.service.InMemoryHistoryManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
     private InMemoryHistoryManager historyManager;
@@ -32,9 +32,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testAddShouldRemoveOldVersionOfTaskFromHistory() {
-        Task task = new Task("Task", "a");
+        Task task = new Task("com.tatianaars.kanban.model.Task", "a");
         historyManager.add(task);
-        task = new Task("Task", "b");
+        task = new Task("com.tatianaars.kanban.model.Task", "b");
         historyManager.add(task);
         List<Task> history = historyManager.getHistory();
         Assertions.assertEquals(1, history.size());

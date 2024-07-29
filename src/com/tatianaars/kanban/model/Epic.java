@@ -1,3 +1,10 @@
+package com.tatianaars.kanban.model;
+
+import com.tatianaars.kanban.model.Task;
+import com.tatianaars.kanban.util.Status;
+import com.tatianaars.kanban.util.TaskType;
+
+import java.time.Duration;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
@@ -13,6 +20,13 @@ public class Epic extends Task {
     public Epic(String name, String description, int id) {
         super(name, description);
         setId(id);
+    }
+
+    public Epic(String name, String description, LocalDateTime startTime, LocalDateTime endTime, Duration duration) {
+        super(name, description);
+        setStartTime(startTime);
+        this.endTime = endTime;
+        setDuration(duration);
     }
 
     @Override
@@ -36,6 +50,8 @@ public class Epic extends Task {
     @Override
     public String toString() {
         String subtasksId = String.valueOf(subtasksIdInEpic);
-        return "Epic{subtasksIdInEpic=" + subtasksId + ", id=" + getId() + ", name='" + getName() + "', description='" + getDescription() + "', status=" + String.valueOf(getStatus()) + "}";
+        return "com.tatianaars.kanban.model.Epic{subtasksIdInEpic=" + subtasksId + ", id=" + getId() + ", name='" + getName() + "', description='" + getDescription() + "', status=" + String.valueOf(getStatus())
+    + " startTime=" + getStartTime() + ", endTiime=" + getEndTime() + ", duration=" + getDuration() + "}";
     }
+
 }

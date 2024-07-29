@@ -1,3 +1,7 @@
+package com.tatianaars.kanban.service;
+
+import com.tatianaars.kanban.model.Task;
+
 public class Node {
     private Task task;
     private Node prev;
