@@ -1,3 +1,7 @@
+package com.tatianaars.kanban.service;
+
+import com.tatianaars.kanban.model.Task;
+
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {

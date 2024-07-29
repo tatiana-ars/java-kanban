@@ -1,3 +1,9 @@
+package com.tatianaars.kanban.model;
+
+import com.tatianaars.kanban.model.Task;
+import com.tatianaars.kanban.util.Status;
+import com.tatianaars.kanban.util.TaskType;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -47,7 +53,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{epicId=" + epicId + ", name='" + getName() + "', description='" + getDescription()
+        return "com.tatianaars.kanban.model.Subtask{epicId=" + epicId + ", name='" + getName() + "', description='" + getDescription()
                 + "', id=" + getId() + ", status=" + String.valueOf(getStatus()) + "', startTime ="
                 + getStartTime() + "', duration='" + getDuration() + "} \n";
     }

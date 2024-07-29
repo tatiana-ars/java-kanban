@@ -1,7 +1,7 @@
+import com.tatianaars.kanban.model.Task;
+import com.tatianaars.kanban.util.Status;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
 

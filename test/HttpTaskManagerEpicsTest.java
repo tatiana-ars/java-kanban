@@ -1,16 +1,19 @@
 import com.google.gson.Gson;
+import com.tatianaars.kanban.http.HttpTaskServer;
+import com.tatianaars.kanban.model.Epic;
+import com.tatianaars.kanban.model.Task;
+import com.tatianaars.kanban.service.Managers;
+import com.tatianaars.kanban.service.TaskManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,7 +41,7 @@ public class HttpTaskManagerEpicsTest {
 
     @Test
     public void testAddEpic() throws IOException, InterruptedException {
-        Epic epic = new Epic("Epic 2", "Testing epic 2", LocalDateTime.now(),
+        Epic epic = new Epic("com.tatianaars.kanban.model.Epic 2", "Testing epic 2", LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(5), Duration.ofMinutes(5));
         String epicJson = gson.toJson(epic);
         HttpClient client = HttpClient.newHttpClient();
@@ -54,12 +57,12 @@ public class HttpTaskManagerEpicsTest {
 
         Assertions.assertNotNull(epicsFromManager, "Эпики не возвращаются");
         Assertions.assertEquals(1, epicsFromManager.size(), "Некорректное количество эпиков");
-        Assertions.assertEquals("Epic 2", epicsFromManager.get(0).getName(), "Некорректное имя эпика");
+        Assertions.assertEquals("com.tatianaars.kanban.model.Epic 2", epicsFromManager.get(0).getName(), "Некорректное имя эпика");
     }
 
     @Test
     public void testGetEpicById() throws IOException, InterruptedException {
-        Epic epic = new Epic("Epic 2", "Testing epic 2", LocalDateTime.now(),
+        Epic epic = new Epic("com.tatianaars.kanban.model.Epic 2", "Testing epic 2", LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(5), Duration.ofMinutes(5));
         manager.createEpic(epic);
         HttpClient client = HttpClient.newHttpClient();
@@ -81,7 +84,7 @@ public class HttpTaskManagerEpicsTest {
 
     @Test
     public void testDeleteEpicById() throws IOException, InterruptedException {
-        Epic epic = new Epic("Epic 2", "Testing epic 2", LocalDateTime.now(),
+        Epic epic = new Epic("com.tatianaars.kanban.model.Epic 2", "Testing epic 2", LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(5), Duration.ofMinutes(5));
         manager.createEpic(epic);
         HttpClient client = HttpClient.newHttpClient();

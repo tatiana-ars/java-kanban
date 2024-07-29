@@ -1,3 +1,5 @@
+package com.tatianaars.kanban.util;
+
 import java.time.LocalDateTime;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

@@ -1,3 +1,9 @@
+package com.tatianaars.kanban.service;
+
+import com.tatianaars.kanban.model.Epic;
+import com.tatianaars.kanban.model.Subtask;
+import com.tatianaars.kanban.model.Task;
+
 import java.util.ArrayList;
 import java.util.List;
 

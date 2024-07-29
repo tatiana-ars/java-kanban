@@ -1,3 +1,11 @@
+package com.tatianaars.kanban.service;
+
+import com.tatianaars.kanban.exception.NotFoundException;
+import com.tatianaars.kanban.model.Epic;
+import com.tatianaars.kanban.model.Subtask;
+import com.tatianaars.kanban.model.Task;
+import com.tatianaars.kanban.util.Status;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -139,8 +147,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask == null) {
             throw new NotFoundException("Подзадача с id " + subtaskId + " не найдена.");
         }
-        historyManager.add(subtasks.get(subtaskId));
-        return subtasks.get(subtaskId);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     @Override

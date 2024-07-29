@@ -1,9 +1,15 @@
+package com.tatianaars.kanban.http;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import com.tatianaars.kanban.exception.NotFoundException;
+import com.tatianaars.kanban.model.Epic;
+import com.tatianaars.kanban.model.Subtask;
+import com.tatianaars.kanban.model.Task;
 
 import java.io.*;
 import java.io.InputStreamReader;
@@ -12,6 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.tatianaars.kanban.service.TaskManager;
+import com.tatianaars.kanban.util.*;
 
 
 public class HttpTaskServer {
@@ -22,7 +31,7 @@ public class HttpTaskServer {
     private static final String HISTORY_PATH = "/history";
     private static final String PRIORITIZED_PATH = "/prioritized";
     private static HttpServer server;
-
+    private static TaskManager taskManager;
 
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
@@ -30,8 +39,6 @@ public class HttpTaskServer {
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .registerTypeAdapter(Duration.class, new DurationAdapter())
             .create();
-
-    private static TaskManager taskManager = Managers.getDefaultTaskManager();
 
     public HttpTaskServer(TaskManager taskManager) {
         this.taskManager = taskManager;
@@ -70,8 +77,8 @@ public class HttpTaskServer {
                 String path = exchange.getRequestURI().getPath();
                 String[] request = path.split("/");
 
-                switch (method) {
-                    case "GET":
+                switch (HTTPMethod.valueOf(method)) {
+                    case GET:
                         if (request.length == 3 && request[1].equals("tasks")) {
                             int id = Integer.parseInt(request[2]);
                             Task task = taskManager.getTaskById(id);
@@ -82,7 +89,7 @@ public class HttpTaskServer {
                             sendText(exchange, gson.toJson(tasks), 200);
                             break;
                         }
-                    case "POST":
+                    case POST:
                         Task newTask = gson.fromJson(new InputStreamReader(exchange.getRequestBody(),
                                 StandardCharsets.UTF_8), Task.class);
                         if (newTask.getId() == 0) {
@@ -94,7 +101,7 @@ public class HttpTaskServer {
                             sendText(exchange, "", 201);
                             break;
                         }
-                    case "DELETE":
+                    case DELETE:
                         int id = Integer.parseInt(request[2]);
                         taskManager.deleteTaskById(id);
                         sendText(exchange, "", 200);
@@ -121,8 +128,8 @@ public class HttpTaskServer {
                 String path = exchange.getRequestURI().getPath();
                 String[] request = path.split("/");
 
-                switch (method) {
-                    case "GET":
+                switch (HTTPMethod.valueOf(method)) {
+                    case GET:
                         if (request.length == 3 && request[1].equals("subtasks")) {
                             int id = Integer.parseInt(request[2]);
                             Subtask subtask = (Subtask) taskManager.getSubtaskById(id);
@@ -133,7 +140,7 @@ public class HttpTaskServer {
                             sendText(exchange, gson.toJson(subtasks), 200);
                             break;
                         }
-                    case "POST":
+                    case POST:
                         Subtask newSubtask = gson.fromJson(new InputStreamReader(exchange.getRequestBody(),
                                 StandardCharsets.UTF_8), Subtask.class);
                         if (newSubtask.getId() == 0) {
@@ -145,7 +152,7 @@ public class HttpTaskServer {
                             sendText(exchange, "", 201);
                             break;
                         }
-                    case "DELETE":
+                    case DELETE:
                         int id = Integer.parseInt(request[2]);
                         taskManager.deleteSubtaskById(id);
                         sendText(exchange, "", 200);
@@ -172,8 +179,8 @@ public class HttpTaskServer {
                 String path = exchange.getRequestURI().getPath();
                 String[] request = path.split("/");
 
-                switch (method) {
-                    case "GET":
+                switch (HTTPMethod.valueOf(method)) {
+                    case GET:
                         if (request.length == 3 && request[1].equals("epics")) {
                             int id = Integer.parseInt(request[2]);
                             Epic epic = (Epic) taskManager.getEpicById(id);
@@ -184,7 +191,7 @@ public class HttpTaskServer {
                             sendText(exchange, gson.toJson(epics), 200);
                             break;
                         }
-                    case "POST":
+                    case POST:
                         Epic epic = gson.fromJson(new InputStreamReader(exchange.getRequestBody(),
                                 StandardCharsets.UTF_8), Epic.class);
                         System.out.println(epic);
@@ -197,7 +204,7 @@ public class HttpTaskServer {
                             sendText(exchange, "", 201);
                             break;
                         }
-                    case "DELETE":
+                    case DELETE:
                         int id = Integer.parseInt(request[2]);
                         taskManager.deleteEpicById(id);
                         sendText(exchange, "", 200);
@@ -222,15 +229,8 @@ public class HttpTaskServer {
             try {
                 String method = exchange.getRequestMethod();
 
-                Gson gson = new GsonBuilder()
-                        .serializeNulls()
-                        .setPrettyPrinting()
-                        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                        .registerTypeAdapter(Duration.class, new DurationAdapter())
-                        .create();
-
-                switch (method) {
-                    case "GET":
+                switch (HTTPMethod.valueOf(method)) {
+                    case GET:
                         List<Task> history = taskManager.getHistory();
                         sendText(exchange, gson.toJson(history), 200);
                         break;
@@ -254,15 +254,8 @@ public class HttpTaskServer {
             try {
                 String method = exchange.getRequestMethod();
 
-                Gson gson = new GsonBuilder()
-                        .serializeNulls()
-                        .setPrettyPrinting()
-                        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                        .registerTypeAdapter(Duration.class, new DurationAdapter())
-                        .create();
-
-                switch (method) {
-                    case "GET":
+                switch (HTTPMethod.valueOf(method)) {
+                    case GET:
                         List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
                         sendText(exchange, gson.toJson(prioritizedTasks), 200);
                         break;

@@ -1,3 +1,5 @@
+package com.tatianaars.kanban.http;
+
 import com.sun.net.httpserver.HttpExchange;
 import java.nio.charset.StandardCharsets;
 import java.io.IOException;

@@ -1,3 +1,8 @@
+package com.tatianaars.kanban.model;
+
+import com.tatianaars.kanban.util.Status;
+import com.tatianaars.kanban.util.TaskType;
+
 import java.time.Duration;
 import java.util.Objects;
 import java.time.LocalDateTime;
@@ -107,7 +112,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{name='" + name + "', description='" + description + "', id=" + id + ", status=" +
+        return "com.tatianaars.kanban.model.Task{name='" + name + "', description='" + description + "', id=" + id + ", status=" +
                 String.valueOf(status) + "', startTime='" + startTime + "', duration='" + duration + "'}";
     }
 }
